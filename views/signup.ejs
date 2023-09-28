@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="full-screen" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Your App Name">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom styles for the mobile menu */
+        .mobile-menu-hidden {
+            transform: translateX(100%); /* Initially hide the menu off-screen to the right */
+        }
+        .mobile-menu-visible {
+            transform: translateX(0); /* Show the menu */
+        }
+
+        .post-card:last-child {
+            margin-bottom: 140px;
+        }
+        
+        #feed {
+            margin-top: 3.5rem;
+        }
+
+        .landscape {
+            width: 80vw;
+            height: auto;
+        }
+
+        .portrait {
+            height: 90vh;
+            width: auto;
+        }
+
+    @media (min-width: 701px) {
+    #feed {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns as needed */
+        gap: 16px; /* Adjust the gap between grid items as needed */
+    }       
+    }
+
+    @media (min-width: 900px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1000px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1200px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+ 
+    </style>
+
+    <title>Family Calendar </title>
+</head>
+<body>
+    <div class="bg-gray-900 min-h-screen p-4">
+        <!-- Header -->
+        <header class="bg-gray-700 py-3 px-4 mb-4 shadow-md fixed top-0 left-0 w-full">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-semibold text-white">Family Calendar Signup</h1>
+                
+        </header>
+        
+        <div class="min-h-screen flex items-center justify-center bg-gray-900">
+            <div class="bg-gray-400 p-8 rounded-md shadow-md post-card">
+              <div class="text-center mb-4">
+                <h2 class="text-2xl font-semibold">Signup</h2>
+              </div>
+              
+              
+                <div class="mb-4">
+                  <label for="email" class="block text-gray-700 font-semibold">Email</label>
+                  <input type="text" id="username" name="email" placeholder="Enter your email" required
+                    class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                </div>
+                
+                <div class="mb-6">
+                  <label for="password" class="block text-gray-700 font-semibold">Password</label>
+                  <input type="password" id="password" name="password" placeholder="Enter your password" required
+                    class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                </div>
+
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 font-semibold">Full Name</label>
+                    <input type="text" id="name" name="Name" placeholder="Enter your password" required
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    >
+                  </div>
+
+                  <div class="mb-6">
+                    <label for="phone" class="block text-gray-700 font-semibold">Phone #</label>
+                    <input type="text" id="phone" name="phone" placeholder="Enter your phone #" required
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    >
+                  </div>
+                
+                  <div class="flex items-center justify-between">
+                    <button id="back" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none m-5">Back</button>
+                    <button onclick="register()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none m-5">Signup</button>
+                  </div>
+           
+            </div>
+          </div>
+          
+    <script>
+            const user = document.getElementById('username')
+            const pass = document.getElementById('password')
+            const fullname = document.getElementById('name')
+            const userphone = document.getElementById('phone')
+            const back = document.getElementById('back')
+
+
+        function register() {
+
+            // if(username.length <= 0) {alert('Enter your Email Address'); return}
+            // if(!password) {alert('Enter your a password'); return}
+            // if(!name) {alert('Enter your Full Name'); return}
+            // if(!phone) {alert('Enter your phone number'); return}
+            let data = {
+                username: user.value,
+                password: pass.value,
+                name: fullname.value,
+                phone: userphone.value
+            }
+
+            console.log(data)
+
+            fetch('/cal/register',
+           {method: 'POST',
+           body: JSON.stringify(data),
+           headers: {
+               'Content-Type': 'application/json;charset=utf-8'
+           }}) 
+           .then(response => response.text())
+           .then(data => {
+               console.log(data)
+                alert(data)
+              });
+
+        }
+
+        back.addEventListener('click', function () {
+            console.log('Click')
+            window.location.href = "/cal/"
+        })
+
+    </script>
+</body>
+</html>

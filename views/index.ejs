@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="full-screen" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Your App Name">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom styles for the mobile menu */
+        .mobile-menu-hidden {
+            transform: translateX(100%); /* Initially hide the menu off-screen to the right */
+        }
+        .mobile-menu-visible {
+            transform: translateX(0); /* Show the menu */
+        }
+
+        .post-card:last-child {
+            margin-bottom: 140px;
+        }
+        
+        #feed {
+            margin-top: 3.5rem;
+        }
+
+        .add-img {
+            height: 300px;
+            width: auto;
+        }
+
+        .post-card {
+        height: 380px; /* Set a fixed height for all cards */
+        overflow: hidden; /* Hide overflow content */
+    }
+
+        .feed-img {
+            max-width: auto;
+            max-height: 275px;
+        }
+
+        .year {
+            width: 120px;
+        }
+
+        .grid-btn {
+            width: 175px;
+            height: 175px;
+   
+        }
+
+        .nav-center {
+            position: absolute;
+            margin-top: 50px;
+            left: 50%;
+            transform: translate(-50%);
+        }
+
+    @media (min-width: 701px) {
+    #feed {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns as needed */
+        gap: 16px; /* Adjust the gap between grid items as needed */
+    }       
+    }
+
+    @media (min-width: 900px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1000px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1200px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+    </style>
+
+    <title>Family Calendar</title>
+</head>
+<body>
+    <div class="bg-gray-900 min-h-screen p-4">
+        <!-- Header -->
+        <header class="bg-gray-700 py-3 px-4 mb-4 shadow-md fixed top-0 left-0 w-full">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-semibold text-white">Calendar</h1>
+                <div class="flex justify-center">
+                    <div>
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300" id="monthSelect" onchange="loadCalendar(this.value)">
+                            <option value="All">All</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Hamburger Menu -->
+               
+                <div id="hamburger-menu" class="cursor-pointer">
+                    <i class="fa fa-bars text-xl text-white"></i>
+                </div>
+            </div>
+        </header>
+        
+
+        <div id="mobile-menu" class="fixed top-0 left-0 w-screen h-screen z-50 mobile-menu-hidden transition-transform duration-300 ease-in-out bg-gray-800">
+            <button id="close-menu" class="absolute top-4 right-4 text-gray-600 hover:text-black">
+                <i class="fa fa-times text-xl text-white"></i>
+            </button>
+           
+            <nav class="flex flex-col items-center justify-center h-full text-center">
+                <div class="grid-btn m-1  bg-violet-500 rounded-2xl border-solid border-violet-600 border-4 shadow-white" onclick="addDate()">
+                    <center><img src="/cal/icons/caladd.png" class="place-content-center m-2" alt=""></center>
+                    <a href="#" class="text-white py-4">Add to Calendar</a>
+                </div>
+                
+                <div class="grid-btn m-1  bg-violet-500 rounded-2xl border-solid border-violet-600 border-4 shadow-white" onclick="editDate()">
+                    <center><img src="/cal/icons/caledit.png" class="place-content-center m-2" alt=""></center>
+                    <a href="#" class="text-white  py-4">Edit Calendar</a>
+                </div>
+
+                <div class="grid-btn m-1  bg-violet-500 rounded-2xl border-solid border-violet-600 border-4 shadow-white"  onclick="window.location.href = '/cal/accounts'">
+                    <center><img src="/cal/icons/accounts.png" class="place-content-center m-2" alt=""></center>
+                    <a href="#" class="text-white py-4">Account Approval</a>
+                </div>
+
+                <div class="grid-btn m-1  bg-violet-500 rounded-2xl border-solid border-violet-600 border-4 shadow-white" onclick="window.location.href = '/cal/logout'">
+                    <center><img src="/cal/icons/logout.png" class="place-content-center m-2" alt=""></center>
+                    <a href="#" class="text-white py-4">Logout</a>
+                </div>
+            </nav>
+            <!-- <nav class="flex flex-col justify-center h-full text-center">
+                <a href="#" class="text-white hover:text-black py-4" onclick="addDate()">Add to Calendar</a>
+                <a href="#" class="text-white hover:text-black py-4" onclick="editDate()">Edit Calendar</a>
+                <a href="/cal/logout" class="text-white hover:text-black py-4">Logout</a>
+            </nav> -->
+        </div>
+
+        <div class="container mx-auto text-center" id="feed"></div>
+        
+        <dialog id="adddate" class="w-400 h-600 bg-white p-4 rounded-lg shadow-md modal">
+            <div>
+
+                <div flex justify-center>
+                    <img src="/cal/img/default.webp" class="add-img " id="addpic" alt="">
+                    </div>
+
+                <div>
+                    <div class="my-4 flex justify-center">
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-full text-center" id="addtype">
+                            <option value="anniversary">Anniversary</option>
+                            <option value="birthday">Birthday</option>
+                            <option value="death">Death Day</option>
+                           
+                        </select>
+                    </div>
+
+                    <div class="flex justify-center ">
+                        <input type="text" placeholder="Name" id="addname" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-full text-center">
+                    </div>
+                    <div class="my-4">
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300" id="addmonth">
+                            <option value="">Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+        
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300" id="addday">
+                            <option value="">Day</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="25">26</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                        </select>
+        
+                        <input type="number" placeholder="Year" id="addyear" class="bg-blue-100 rounded-lg p-2 border border-gray-300 year">
+                    </div>
+        
+                    <div class="flex justify-center mb-5">
+                        <input type="file" id="imageInput" placeholder="Add a picture">
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-md  focus:outline-none ml-5" onclick="AddtoCal()" id="addbtn">Save</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md focus:outline-none" onclick="adddate.close()">Cancel</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </dialog>
+
+
+        <dialog id="editdate" class="w-400 h-600 bg-white p-4 rounded-lg shadow-md modal">
+            <div>
+
+                <div flex justify-center>
+                    <img src="/cal/img/default.webp" class="add-img " id="editpic" alt="">
+                    </div>
+
+                <div>
+                    <div class="my-4 flex justify-center">
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-full text-center" id="edittype" onchange="loadNames()">
+                            <option value="">Select an Event</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="birthday">Birthday</option>
+                            <option value="death">Death Day</option>
+                           
+                        </select>
+                    </div>
+
+                    <div class="my-4 flex justify-center">
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-full text-center" id="editperson" onchange="loadPerson()">
+                            <option value="">Select Person to Edit</option>
+
+                        </select>
+                    </div>
+
+                    <div class="flex justify-center ">
+                        <input type="text" placeholder="Name" id="editname" class="bg-blue-100 rounded-lg p-2 border border-gray-300 w-full text-center">
+                    </div>
+                    <div class="my-4">
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300" id="editmonth">
+                            <option value="">Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+        
+                        <select class="bg-blue-100 rounded-lg p-2 border border-gray-300" id="editday">
+                            <option value="">Day</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="25">26</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                        </select>
+        
+                        <input type="number" placeholder="Year" id="edityear" class="bg-blue-100 rounded-lg p-2 border border-gray-300 year">
+                    </div>
+        
+                    <div class="flex justify-center mb-5">
+                        <input type="file" id="editimageInput" placeholder="edit a picture">
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-md  focus:outline-none ml-5" onclick="saveEdit()" id="editbtn">Save</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md focus:outline-none" onclick="editClose()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+        
+
+
+
+    <script>
+        const adddate = document.getElementById('adddate')
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuButton = document.getElementById('close-menu');
+        const userAgent = navigator.userAgent;
+        const cameraInput = document.getElementById('imageInput');
+
+        let addbtn = document.getElementById('addbtn')
+        let addtype = document.getElementById('addtype')
+        let addpic = document.getElementById('addpic')
+        let addmonth = document.getElementById('addmonth')
+        let addday = document.getElementById('addday')
+        let addyear = document.getElementById('addyear')
+        let addname = document.getElementById('addname')
+        
+        let imgString = ''
+
+        const editdate = document.getElementById('editdate')
+        let editbtn = document.getElementById('editbtn')
+        let edittype = document.getElementById('edittype')
+        let editpic = document.getElementById('editpic')
+        let editmonth = document.getElementById('editmonth')
+        let editday = document.getElementById('editday')
+        let edityear = document.getElementById('edityear')
+        let editname = document.getElementById('editname')
+        let editperson = document.getElementById('editperson')
+        const editcameraInput = document.getElementById('editimageInput');
+        
+        cameraInput.addEventListener('change', (event) => {
+            const selectedFile = event.target.files[0];
+            
+            if (selectedFile) {
+                addbtn.style.display = 'none'
+
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+                
+
+                fetch('/cal/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    imgString = data // You can handle the server response here
+                    addbtn.style.display = 'inline'
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error uploading image.');
+                    addbtn.style.display = 'inline'
+                });
+    
+                const imageUrl = URL.createObjectURL(selectedFile);
+                addpic.src = imageUrl;
+                cameraInput.value = '';
+            }
+        });
+
+        function toggleMobileMenu() {
+            if (mobileMenu.classList.contains('mobile-menu-hidden')) {
+                mobileMenu.classList.remove('mobile-menu-hidden');
+                mobileMenu.classList.add('mobile-menu-visible');
+            } else {
+                mobileMenu.classList.remove('mobile-menu-visible');
+                mobileMenu.classList.add('mobile-menu-hidden');
+            }
+        }
+
+        hamburgerMenu.addEventListener('click', toggleMobileMenu);
+        closeMenuButton.addEventListener('click', toggleMobileMenu);
+
+
+        function addDate() {
+            toggleMobileMenu()
+            adddate.showModal()
+        }
+
+        function editDate() {
+            toggleMobileMenu()
+            editdate.showModal()
+        }
+
+        function editClose() {
+            clearEdits()
+            editdate.close()
+        }
+
+
+
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        function setCurrentMonth() {
+            const currentDate = new Date();
+            const currentMonthIndex = currentDate.getMonth();
+            monthSelect.selectedIndex = currentMonthIndex + 1;
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            
+            const date = new Date();
+            const monthIndex = date.getMonth();
+            const monthName = months[monthIndex];
+            loadCalendar(monthName)
+        }
+
+       function loadCalendar(monthName) {
+        
+                function dateformat(datadate) {
+                    const inputDateString = datadate
+                    const inputDate = new Date(inputDateString);
+
+                    // Define an array of month names
+                    const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                    ];
+
+                    // Get the month, day, and year components
+                    const month = monthNames[inputDate.getUTCMonth()];
+                    const day = inputDate.getUTCDate();
+                    const year = inputDate.getUTCFullYear();
+
+                    // Format the date as "Month name day year"
+                    const formattedDate = `${month} ${day} ${year}`;
+
+                    return formattedDate;
+                }
+
+                function typeColor(caltype) {
+                    if(caltype == `Anniversary`) {
+                        return "bg-red-600"
+                    }
+
+                    if(caltype == `Birthday`) {
+                        return "bg-yellow-600"
+                    }
+
+                    if(caltype == `Died`) {
+                        return "bg-violet-700"
+                    }
+
+                }
+
+                document.getElementById('feed').innerHTML = '';
+                        fetch(`/cal/dates?date=${monthName}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                function checkimage(image) {
+                                    if(image == '' || image == null){
+                                        return '/cal/img/default.webp'
+                                    } else {
+                                        return image
+                                    }
+                                }
+                                for(let i = 0; i<data.length; i++) {
+                                    const postHTML = `<div class="${typeColor(data[i].source_table)} p-4 mb-4 rounded-md text-white shadow-md post-card">
+                                    <div class="flex items-center mb-4">
+                                        <span class="font-semibold text-white">${data[i].name}</span>
+                                    </div>
+                                    <center> <img src="${checkimage(data[i].image)}" class="mb-2 feed-img"> </center>
+                                    <div class="flex items-center">
+                                        <span class="ml-auto text-white">${data[i].source_table} : ${dateformat(data[i].date)}</span>
+                                    </div>
+                                </div>
+                                `;
+                                document.getElementById('feed').innerHTML += postHTML;
+                                }
+                            });
+            }
+
+        function loadAddedMonth(Month) {
+                document.getElementById('feed').innerHTML = '';
+                fetch(`/cal/dates?date=${Month}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        function checkimage(image) {
+                            if(image == '' || image == null){
+                                return '/cal/img/default.webp'
+                            } else {
+                                return image
+                            }
+                        }
+                        for(let i = 0; i<data.length; i++) {
+                            const postHTML = `
+                            <div class="${typeColor(data[i].source_table)} p-4 mb-4 rounded-md text-white shadow-md post-card">
+                                <div class="flex items-center mb-4">
+                                    <span class="font-semibold text-white">${data[i].name}</span>
+                                </div>
+                                <img src="${checkimage(data[i].image)}" class="mb-2 feed-img">
+                                <div class="flex items-center">
+                                    <span class="ml-auto text-white">${data[i].source_table} : ${dateformat(data[i].date)}</span>
+                                </div>
+                    
+                            </div> `;
+                        document.getElementById('feed').innerHTML += postHTML;
+                        }
+                    });
+            }
+        
+        function AddtoCal() {
+            if(addname.value == '') {
+                alert('Enter Name!')
+                return
+            }
+            if(addmonth.value == '') {
+                alert('Enter Month!')
+                return
+            }
+            if(addday.value == '') {
+                alert('Enter Day!')
+                return
+            }
+            if(addyear.value == '') {
+                alert('Enter Year!')
+                return
+            }
+
+            let data = {
+                type: addtype.value,
+                name: addname.value,
+                date: `${addyear.value}-${addmonth.value}-${addday.value}`,
+                image: imgString
+            }
+            //console.log(data)
+            fetch("/cal/dates", {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+           
+        }).then(response => response.text())
+        .then(data => {
+            if(data == 'saved') {
+                
+                document.getElementById('monthSelect').selectedIndex =addmonth.selectedIndex
+                loadCalendar(document.getElementById('monthSelect').value)
+
+                addtype.selectedIndex = 0
+                addname.value = ''
+                addyear.selectedIndex = 0
+                addmonth.selectedIndex = 0
+                addyear.value = ''
+                addpic.src = '/cal/img/default.webp'
+                imgString = ''
+
+
+                adddate.close()
+            } else {
+                alert('Error')
+            }
+            
+            });
+        }
+        
+        function loadNames(){
+            clearEdits()
+            fetch(`/cal/event?type=${edittype.value}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                
+                                for(let i = 0; i<data.length; i++) {
+                                    //console.log(data)
+                                    editperson.innerHTML += ` <option value="${data[i].id}">${data[i].name}</option>`;
+                                }
+                            });
+        }
+
+        function loadPerson(){
+            fetch(`/cal/person?type=${edittype.value}&id=${editperson.value}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data)
+                                    
+                                    editname.value = data[0].name
+                                    editmonth.value = data[0].date.split('-')[1]
+                                    editday.value = data[0].date.split('-')[2].split('T')[0]
+                                    edityear.value = data[0].date.split('-')[0]
+                                    editpic.src = data[0].image
+                                    imgString = data[0].image
+                            });
+        }
+
+        function clearEdits(){
+            editname.value = ''
+            editmonth.selectedIndex = 0
+            editday.selectedIndex = 0
+            
+            editperson.innerHTML = ``
+            editperson.innerHTML = `<option value="">Select Person to Edit</option>`
+            edityear.value = ''
+            editpic.src = '/cal/img/default.webp'
+            imgString = ''
+        }
+
+        editcameraInput.addEventListener('change', (event) => {
+            const selectedFile = event.target.files[0];
+            
+            if (selectedFile) {
+                editbtn.style.display = 'none'
+
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+                
+
+                fetch('/cal/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    imgString = data // You can handle the server response here
+                    editbtn.style.display = 'inline'
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error uploading image.');
+                    editbtn.style.display = 'inline'
+                });
+    
+                const imageUrl = URL.createObjectURL(selectedFile);
+                editpic.src = imageUrl;
+                editcameraInput.value = '';
+            }
+        });
+
+        function saveEdit() {
+            if(editname.value == '') {
+                alert('Enter Name!')
+                return
+            }
+            if(editmonth.value == '') {
+                alert('Enter Month!')
+                return
+            }
+            if(editday.value == '') {
+                alert('Enter Day!')
+                return
+            }
+            if(edityear.value == '') {
+                alert('Enter Year!')
+                return
+            }
+
+            let data = {
+                id: editperson.value,
+                type: edittype.value,
+                name: editname.value,
+                date: `${edityear.value}-${editmonth.value}-${editday.value}`,
+                image: imgString
+            }
+            //console.log(data)
+            fetch("/cal/dates", {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+           
+        }).then(response => response.text())
+        .then(data => {
+            if(data == 'saved') {
+                document.getElementById('monthSelect').selectedIndex = editmonth.selectedIndex
+                loadCalendar(document.getElementById('monthSelect').value)
+                clearEdits()
+                editdate.close()
+            } else {
+                alert('Error')
+            }
+            });
+        }
+
+        function usercheck () {
+            fetch(`/cal/newusers`)
+            .then(response => response.json())
+            .then(data => {
+                    if(data.length >= 1) {
+                        alert('There are pending user accounts awaiting appoval.')
+                    }
+                })
+            };
+        
+
+
+
+
+
+
+        setCurrentMonth()
+        usercheck ()
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom styles for the mobile menu */
+        .mobile-menu-hidden {
+            transform: translateX(100%); /* Initially hide the menu off-screen to the right */
+        }
+        .mobile-menu-visible {
+            transform: translateX(0); /* Show the menu */
+        }
+
+        .post-card:last-child {
+            margin-bottom: 140px;
+        }
+        
+        #feed {
+            margin-top: 3.5rem;
+        }
+
+        .landscape {
+            width: 80vw;
+            height: auto;
+        }
+
+        .portrait {
+            height: 90vh;
+            width: auto;
+        }
+
+    @media (min-width: 701px) {
+    #feed {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns as needed */
+        gap: 16px; /* Adjust the gap between grid items as needed */
+    }       
+    }
+
+    @media (min-width: 900px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1000px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+    @media (min-width: 1200px) {
+        #feed {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Adjust the number of columns as needed */
+            gap: 16px; /* Adjust the gap between grid items as needed */
+        }
+    }
+
+ 
+    </style>
+
+    <title>Family Calendar App</title>
+</head>
+<body>
+    <div class="bg-gray-900 min-h-screen p-4">
+        <!-- Header -->
+        <header class="bg-gray-700 py-3 px-4 mb-4 shadow-md fixed top-0 left-0 w-full">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-semibold text-white">Family Calendar Login</h1>
+                <!-- Hamburger Menu -->
+               
+                
+        </header>
+        
+
+        
+        <div class="min-h-screen flex items-center justify-center bg-gray-900">
+            <div class="bg-gray-400 p-8 rounded-md shadow-md post-card">
+              <div class="text-center mb-4">
+                <h2 class="text-2xl font-semibold">Login</h2>
+              </div>
+              
+              
+                <div class="mb-4">
+                  <label for="username" class="block text-gray-700 font-semibold">Email</label>
+                  <input type="username" id="username" name="username" placeholder="Enter your email" required
+                    class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                </div>
+                
+                <div class="mb-6">
+                  <label for="password" class="block text-gray-700 font-semibold">Password</label>
+                  <input type="password" id="password" name="password"  placeholder="Enter your password" value="" required
+                    class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <button  class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none m-5" onclick="Login()">Login</button>
+                    <button  class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none m-5">Forgot Password</button>
+                    <button  class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none m-5" onclick="window.location.href ='/cal/signup'">SignUp</button>
+                  </div>
+               
+            </div>
+          </div>
+          
+
+
+    <dialog id="imgdialog" class="">
+
+            <img src="" id="dialogimg" class="">
+
+    </dialog>
+
+    <script>
+
+
+        console.log()
+
+            // if(localStorage.getItem('username')) {
+            //      window.location.href = '/cal/dashboard/'
+            // }
+           
+        function Login() {
+           
+           let data = {
+               username: document.getElementById('username').value,
+               password: document.getElementById('password').value
+           }
+           fetch('/cal/login',
+           {method: 'POST',
+           body: JSON.stringify(data),
+           headers: {
+               'Content-Type': 'application/json;charset=utf-8'
+           }}) 
+           .then(response => response.text())
+           .then(data => {
+               console.log(data)
+
+               if(data === 'Pass') {
+                   localStorage.setItem('username', username.value)
+                   window.location.href = '/cal/dashboard/'
+               }else {
+                   console.log("fail")
+               }
+              });
+       }
+
+        // Your existing JavaScript code...
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        function toggleMobileMenu() {
+            if (mobileMenu.classList.contains('mobile-menu-hidden')) {
+                mobileMenu.classList.remove('mobile-menu-hidden');
+                mobileMenu.classList.add('mobile-menu-visible');
+            } else {
+                mobileMenu.classList.remove('mobile-menu-visible');
+                mobileMenu.classList.add('mobile-menu-hidden');
+            }
+        }
+
+    
+       
+    </script>
+</body>
+</html>
